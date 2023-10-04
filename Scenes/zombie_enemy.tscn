@@ -1,13 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://dmsnvoi6jecmu"]
+[gd_scene load_steps=17 format=3 uid="uid://dmsnvoi6jecmu"]
 
 [ext_resource type="Texture2D" uid="uid://57u6c4shgvir" path="res://Assets/zombie_standing.png" id="1_o0ssw"]
 [ext_resource type="Script" path="res://Scripts/zombie_enemy.gd" id="1_y1cks"]
+[ext_resource type="Script" path="res://Scripts/zombie_life_bar.gd" id="3_dbmbk"]
 [ext_resource type="Script" path="res://Scripts/state_machine.gd" id="3_eh4li"]
+[ext_resource type="Material" uid="uid://du5ubbne2733l" path="res://Materials/light_only.material" id="4_0gn2x"]
 [ext_resource type="Script" path="res://Scenes/Idle.gd" id="4_u06qi"]
 [ext_resource type="Script" path="res://Scripts/random_timer.gd" id="5_ii8wk"]
 [ext_resource type="Script" path="res://Scenes/Wandering.gd" id="6_gs0gs"]
 [ext_resource type="Script" path="res://Scenes/Chase.gd" id="7_prg2b"]
 [ext_resource type="Script" path="res://Scenes/Attack.gd" id="8_kjs45"]
+[ext_resource type="Script" path="res://Scripts/health_system.gd" id="9_6o8ke"]
+[ext_resource type="Theme" uid="uid://o2i6ofsjprkk" path="res://Themes/ui.theme" id="10_svtdj"]
+[ext_resource type="AudioStream" uid="uid://bf1kc5aamsrpt" path="res://Assets/Sound/zombie_attack_1.mp3" id="12_l8cy8"]
+[ext_resource type="AudioStream" uid="uid://bni3gq1twt3tv" path="res://Assets/Sound/zombie_attack_2.mp3" id="13_ay1dp"]
+[ext_resource type="AudioStream" uid="uid://dy02uijusnnm3" path="res://Assets/Sound/zombie_attack_3.mp3" id="14_cr6j3"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cm6h6"]
 radius = 11.0
@@ -18,7 +25,19 @@ collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_y1cks")
 
+[node name="LifeBar" type="ProgressBar" parent="."]
+material = ExtResource("4_0gn2x")
+offset_left = -22.0
+offset_top = -34.0
+offset_right = 18.0
+offset_bottom = -24.0
+theme = ExtResource("10_svtdj")
+value = 20.0
+show_percentage = false
+script = ExtResource("3_dbmbk")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = ExtResource("4_0gn2x")
 texture = ExtResource("1_o0ssw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -61,6 +80,7 @@ max_time = 3.0
 script = ExtResource("8_kjs45")
 
 [node name="StateLabel" type="Label" parent="."]
+visible = false
 offset_left = -22.0
 offset_top = -46.0
 offset_right = 18.0
@@ -70,14 +90,29 @@ offset_bottom = -23.0
 target_position = Vector2(174, 0)
 collide_with_areas = true
 
+[node name="HealthSystem" type="Node" parent="."]
+script = ExtResource("9_6o8ke")
+
 [node name="AttackArea" type="Area2D" parent="."]
 collision_layer = 16
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="AttackArea"]
 polygon = PackedVector2Array(0, 0, 45, -25, 45, 25)
 
+[node name="Sounds" type="Node" parent="."]
+
+[node name="ZombieAttackSounds1" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("12_l8cy8")
+
+[node name="ZombieAttackSounds2" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("13_ay1dp")
+
+[node name="ZombieAttackSounds3" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("14_cr6j3")
+
 [connection signal="timeout" from="StateMachine/Idle/IdleTimer" to="StateMachine/Idle" method="_on_idle_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Idle/RotationTimer" to="StateMachine/Idle" method="_on_rotation_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Chase/RandomTargetChaseUpdateTimer" to="StateMachine/Chase" method="_on_random_target_chase_update_timer_timeout"]
+[connection signal="damage_taken" from="HealthSystem" to="StateMachine" method="_on_health_system_damage_taken"]
 [connection signal="body_entered" from="AttackArea" to="StateMachine/Chase" method="_on_attack_area_body_entered"]
 [connection signal="body_exited" from="AttackArea" to="StateMachine/Attack" method="_on_attack_area_body_exited"]

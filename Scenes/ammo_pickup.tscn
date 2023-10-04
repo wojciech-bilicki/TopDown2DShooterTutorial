@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bw58hbvgrukc"]
+
+[ext_resource type="Material" uid="uid://du5ubbne2733l" path="res://Materials/light_only.material" id="1_5r32t"]
+[ext_resource type="Script" path="res://Scripts/ammo_pickup.gd" id="1_8fd1a"]
+[ext_resource type="Texture2D" uid="uid://bg32sj3df8aoq" path="res://Assets/ammo_pickup.png" id="1_a1g6m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w8fkn"]
+size = Vector2(16, 16)
+
+[node name="AmmoPickup" type="Area2D"]
+texture_filter = 1
+collision_layer = 64
+script = ExtResource("1_8fd1a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = ExtResource("1_5r32t")
+texture = ExtResource("1_a1g6m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_w8fkn")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

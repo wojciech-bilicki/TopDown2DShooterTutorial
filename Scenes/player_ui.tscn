@@ -1,0 +1,94 @@
+[gd_scene load_steps=4 format=3 uid="uid://bshkyyfn6knhd"]
+
+[ext_resource type="Script" path="res://Scripts/player_ui.gd" id="1_7nceg"]
+[ext_resource type="Theme" uid="uid://o2i6ofsjprkk" path="res://Themes/ui.theme" id="1_wbt8q"]
+[ext_resource type="Texture2D" uid="uid://crejfhgcj8jga" path="res://Assets/key.png" id="3_shr7w"]
+
+[node name="PlayerUI" type="CanvasLayer"]
+script = ExtResource("1_7nceg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="LifeBar" type="ProgressBar" parent="MarginContainer"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("1_wbt8q")
+value = 20.0
+show_percentage = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="AmmoContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AmmoLeftLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "/10"
+
+[node name="KeyIcon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("3_shr7w")
+expand_mode = 2
+
+[node name="ExtractCounterLabel" type="Label" parent="MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 40
+
+[node name="GameOverContainer" type="CenterContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="GameOverContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.5
+offset_top = -29.0
+offset_right = 47.5
+offset_bottom = 29.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameOverLabel" type="Label" parent="GameOverContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "You have extracted :)"
+
+[node name="Play Again Button" type="Button" parent="GameOverContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Play AGAIN"
+
+[connection signal="pressed" from="GameOverContainer/Panel/VBoxContainer/Play Again Button" to="." method="_on_play_again_button_pressed"]

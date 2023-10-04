@@ -35,3 +35,7 @@ func transition_to(target_state_name: String, msg: Dictionary = {}):
 	state = get_node(target_state_name)
 	state.enter(msg)
 	state_label.text = state_name
+
+func _on_health_system_damage_taken(current_health):
+	if state_name != "Chase" and state_name != "Attack":
+		transition_to("Chase")

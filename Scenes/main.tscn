@@ -1,8 +1,14 @@
-[gd_scene load_steps=29 format=3 uid="uid://l46dd8pkkixa"]
+[gd_scene load_steps=35 format=3 uid="uid://l46dd8pkkixa"]
 
 [ext_resource type="Texture2D" uid="uid://c4ypmbh3x8n3d" path="res://Assets/spritesheet_tiles.png" id="1_ao1cb"]
 [ext_resource type="PackedScene" uid="uid://bjxyci4gifbyb" path="res://Scenes/player.tscn" id="2_3wrlq"]
 [ext_resource type="PackedScene" uid="uid://dmsnvoi6jecmu" path="res://Scenes/zombie_enemy.tscn" id="2_b0pai"]
+[ext_resource type="PackedScene" uid="uid://bshkyyfn6knhd" path="res://Scenes/player_ui.tscn" id="3_km44g"]
+[ext_resource type="PackedScene" uid="uid://bw58hbvgrukc" path="res://Scenes/ammo_pickup.tscn" id="4_ru2s2"]
+[ext_resource type="PackedScene" uid="uid://c164b6qb8ruft" path="res://Scenes/health_pickup.tscn" id="6_lr74n"]
+[ext_resource type="PackedScene" uid="uid://c36uj83ykhemk" path="res://Scenes/key_pickup.tscn" id="7_qpmsp"]
+[ext_resource type="PackedScene" uid="uid://dw2uifivxvwk3" path="res://Scenes/extract.tscn" id="8_x7c6w"]
+[ext_resource type="AudioStream" uid="uid://vhniq3lw33e8" path="res://Assets/Sound/pickup.mp3" id="9_codfv"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_ovm7s"]
 tile_data = PackedInt32Array(0, 1179648, 6, 65536, 1179648, 7, 1, 1245184, 6, 65537, 1245184, 7)
@@ -2241,6 +2247,36 @@ layer_3/tile_data = PackedInt32Array(-786413, 1572864, 16, 720894, 1179648, 19, 
 [node name="ZombieEnemy" parent="." instance=ExtResource("2_b0pai")]
 position = Vector2(-285, 563)
 
-[node name="Player" parent="." groups=["player"] instance=ExtResource("2_3wrlq")]
-position = Vector2(-507, 485)
+[node name="ZombieEnemy2" parent="." instance=ExtResource("2_b0pai")]
+position = Vector2(554, -798)
+
+[node name="AmmoPickup" parent="." instance=ExtResource("4_ru2s2")]
+position = Vector2(313.016, 369.77)
+
+[node name="PlayerUI" parent="." instance=ExtResource("3_km44g")]
+
+[node name="Player" parent="." node_paths=PackedStringArray("player_ui") groups=["player"] instance=ExtResource("2_3wrlq")]
+position = Vector2(592, -39)
 collision_mask = 2
+player_ui = NodePath("../PlayerUI")
+
+[node name="KeyPickup" parent="." instance=ExtResource("7_qpmsp")]
+position = Vector2(-60, 356)
+
+[node name="HealthPickup" parent="." instance=ExtResource("6_lr74n")]
+position = Vector2(318, 437)
+
+[node name="Extract" parent="." instance=ExtResource("8_x7c6w")]
+position = Vector2(1823, 851)
+
+[node name="Extract2" parent="." instance=ExtResource("8_x7c6w")]
+position = Vector2(-1465, -662)
+
+[node name="Extract3" parent="." instance=ExtResource("8_x7c6w")]
+position = Vector2(1764, -1476)
+
+[node name="PickupStreamPlayer" type="AudioStreamPlayer2D" parent="." groups=["pickup_player"]]
+stream = ExtResource("9_codfv")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.411765, 0.411765, 0.411765, 1)

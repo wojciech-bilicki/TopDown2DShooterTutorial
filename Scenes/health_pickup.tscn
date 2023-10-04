@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://c164b6qb8ruft"]
+
+[ext_resource type="Material" uid="uid://du5ubbne2733l" path="res://Materials/light_only.material" id="1_a1sbn"]
+[ext_resource type="Script" path="res://Scripts/health_pickup.gd" id="1_jglq0"]
+[ext_resource type="Texture2D" uid="uid://di35pwbyxyp23" path="res://Assets/health_pickup.png" id="1_q7tvi"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kt62j"]
+size = Vector2(16, 15.5)
+
+[node name="HealthPickup" type="Area2D"]
+collision_layer = 64
+script = ExtResource("1_jglq0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+material = ExtResource("1_a1sbn")
+texture = ExtResource("1_q7tvi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_kt62j")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
