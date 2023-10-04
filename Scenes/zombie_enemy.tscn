@@ -1,0 +1,83 @@
+[gd_scene load_steps=10 format=3 uid="uid://dmsnvoi6jecmu"]
+
+[ext_resource type="Texture2D" uid="uid://57u6c4shgvir" path="res://Assets/zombie_standing.png" id="1_o0ssw"]
+[ext_resource type="Script" path="res://Scripts/zombie_enemy.gd" id="1_y1cks"]
+[ext_resource type="Script" path="res://Scripts/state_machine.gd" id="3_eh4li"]
+[ext_resource type="Script" path="res://Scenes/Idle.gd" id="4_u06qi"]
+[ext_resource type="Script" path="res://Scripts/random_timer.gd" id="5_ii8wk"]
+[ext_resource type="Script" path="res://Scenes/Wandering.gd" id="6_gs0gs"]
+[ext_resource type="Script" path="res://Scenes/Chase.gd" id="7_prg2b"]
+[ext_resource type="Script" path="res://Scenes/Attack.gd" id="8_kjs45"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cm6h6"]
+radius = 11.0
+height = 40.0
+
+[node name="ZombieEnemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_y1cks")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_o0ssw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0)
+shape = SubResource("CapsuleShape2D_cm6h6")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("3_eh4li")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("4_u06qi")
+
+[node name="IdleTimer" type="Timer" parent="StateMachine/Idle"]
+one_shot = true
+script = ExtResource("5_ii8wk")
+
+[node name="RotationTimer" type="Timer" parent="StateMachine/Idle"]
+one_shot = true
+script = ExtResource("5_ii8wk")
+min_time = 0.2
+max_time = 1.0
+
+[node name="Wandering" type="Node" parent="StateMachine"]
+script = ExtResource("6_gs0gs")
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = ExtResource("7_prg2b")
+
+[node name="RandomTargetChaseUpdateTimer" type="Timer" parent="StateMachine/Chase"]
+one_shot = true
+script = ExtResource("5_ii8wk")
+min_time = 0.5
+max_time = 3.0
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("8_kjs45")
+
+[node name="StateLabel" type="Label" parent="."]
+offset_left = -22.0
+offset_top = -46.0
+offset_right = 18.0
+offset_bottom = -23.0
+
+[node name="VisionRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(174, 0)
+collide_with_areas = true
+
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 16
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="AttackArea"]
+polygon = PackedVector2Array(0, 0, 45, -25, 45, 25)
+
+[connection signal="timeout" from="StateMachine/Idle/IdleTimer" to="StateMachine/Idle" method="_on_idle_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Idle/RotationTimer" to="StateMachine/Idle" method="_on_rotation_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Chase/RandomTargetChaseUpdateTimer" to="StateMachine/Chase" method="_on_random_target_chase_update_timer_timeout"]
+[connection signal="body_entered" from="AttackArea" to="StateMachine/Chase" method="_on_attack_area_body_entered"]
+[connection signal="body_exited" from="AttackArea" to="StateMachine/Attack" method="_on_attack_area_body_exited"]
